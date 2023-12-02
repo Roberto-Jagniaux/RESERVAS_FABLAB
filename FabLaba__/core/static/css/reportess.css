@@ -1,0 +1,21 @@
+.styled-table {
+    margin: 100px 0;
+    font-size: 150%;
+    min-width: 1100px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.50);
+}
+
+.styled-table thead tr  {
+    background-color: red;
+    text-align: center;
+
+}
+
+.styled-table th,
+.styled-table td {
+    padding: 1px 1px;
+}
+
+.styled-table tbody tr {
+    border-bottom: 1px solid #dddd;
+}

@@ -1,0 +1,70 @@
+{%load static%}
+<!DOCTYPE html>
+<html style="font-size: 16px;" lang="es">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="utf-8">
+    <meta name="keywords" content="">
+    <meta name="description" content="">
+    <title>Login</title>
+    <link rel="stylesheet" href="{% static 'css/loginBase.css' %}" media="screen">
+    <link id="u-theme-google-font" rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:100,100i,300,300i,400,400i,500,500i,700,700i,900,900i|Open+Sans:300,300i,400,400i,500,500i,600,600i,700,700i,800,800i">
+    <script type="application/ld+json">{
+        "@context": "http://schema.org",
+        "@type": "Organization",
+        "name": ""
+    }</script>
+    <meta name="theme-color" content="#478ac9">
+    <meta property="og:title" content="Login">
+    <meta property="og:type" content="website">
+    <meta data-intl-tel-input-cdn-path="intlTelInput/">
+</head>
+<body data-path-to-root="./" data-include-products="false" class="u-body u-overlap u-overlap-contrast u-overlap-transparent u-xl-mode" data-lang="es">
+    <section class="u-align-center u-clearfix u-palette-5-dark-3 u-section-1" id="carousel_2d24">
+        <div class="u-clearfix u-sheet u-sheet-1">
+            <div class="u-border-9 u-border-white u-expanded-width u-line u-line-horizontal u-line-1"></div>
+        <div class="u-container-style u-group u-palette-2-base u-radius-10 u-shape-round u-group-1">
+          <div class="red-box">
+            <h4 class="u-text-1fablab">RESERVAS FABLAB</h4>
+        </div>
+            </div>
+            <div class="u-container-style u-group u-radius-30 u-shape-round u-white u-group-2 ">
+                <div class="u-container-layout u-container-layout-2">
+                    <img class="u-image-1" src="{% static 'img\fablab.png' %}" alt="">
+                    {% if messages %}
+    <ul class="d-flex justify-content-center">
+        {% for message in messages %}
+            <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+        {% endfor %}
+    </ul>
+{% endif %}
+                    <form method="post" action="{% url 'login_view' %}" id="loginForm">
+                        {% csrf_token %}
+                      
+                      <p class="u-text u-text-body-color u-text-default u-text-2">Ingrese su usuario:</p>
+                      <div class="d-flex justify-content-center">
+                          <div>
+                              <input type="text" class="form-control" name="username" id="username" placeholder="usuario">
+                              <input type="password" class="form-control" name="password" id="password" placeholder="contraseña">
+
+                          </div>
+                      </div>
+
+                      
+                        {% block content %}{% endblock %}
+                      
+                  
+                      <input type="submit" class="u-border-none u-btn u-btn-round u-button-style u-hover-palette-1-light-1 u-palette-2-base u-radius-50 u-btn-1" value="Ingresar">
+                  </form>
+                  
+            
+                  
+                  
+
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+</body>
+</html>

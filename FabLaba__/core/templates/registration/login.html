@@ -1,0 +1,37 @@
+{% load static %}
+<link rel="stylesheet" href="{% static 'css/loginBase.css' %}" media="screen">
+{%block content%}
+<section class="u-align-center u-clearfix u-palette-5-dark-3 u-section-1" id="carousel_2d24">
+    <div class="u-clearfix u-sheet u-sheet-1">
+        <div class="u-border-9 u-border-white u-expanded-width u-line u-line-horizontal u-line-1"></div>
+    <div class="u-container-style u-group u-palette-2-base u-radius-10 u-shape-round u-group-1">
+      <div class="red-box">
+        <h4 class="u-text-1fablab">RESERVAS FABLAB</h4>
+                </div>
+            </div>
+            <div class="u-container-style u-group u-radius-30 u-shape-round u-white u-group-2 ">
+                <div class="u-container-layout u-container-layout-2">
+                    <img class="u-image-1" src="{% static 'img\fablab.png' %}" alt="">
+                    {% if messages %}
+                        <ul class="d-flex justify-content-center">
+                            {% for message in messages %}
+                                <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
+                    <form method="post"  id="loginForm">
+                        {% csrf_token %}
+                        <p class="u-text u-text-body-color u-text-default u-text-2">Ingrese su usuario:</p>
+                        <div class="d-flex justify-content-center">
+                            <div>
+                                <input type="text" class="form-control" name="username" id="username" placeholder="usuario">
+                                <input type="password" class="form-control" name="password" id="password" placeholder="contraseña">
+                            </div>
+                        </div>
+                        <input type="submit" class="u-border-none u-btn u-btn-round u-button-style u-hover-palette-1-light-1 u-palette-2-base u-radius-50 u-btn-1" value="Ingresar">
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+{%endblock%}

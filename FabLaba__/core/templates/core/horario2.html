@@ -1,0 +1,260 @@
+{%load static%}
+{% block content %} 
+{% endblock %}   
+<!DOCTYPE html>
+<html style="font-size: 16px;" lang="es"><head><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="utf-8">
+  <meta name="keywords" content="">
+  <meta name="description" content="">
+  <title>Horario</title>
+
+  <link rel="stylesheet" href="{% static 'fullcalendar/lib/main.css' %}" media="screen">
+  <script src="{% static 'fullcalendar/lib/main.js' %}"></script>
+  <script src="{% static 'fullcalendar/lib/locales-all.js' %}"></script>
+  <script src="{% static 'fullcalendar/dist/index.global.js' %}"></script>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+  
+  <link href='https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css' rel='stylesheet'>
+  <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+  <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+  <link rel="stylesheet" href="{% static 'css/horario.css' %}" media="screen">
+
+
+
+
+
+    <!--var json = [
+    {% for x in fechas %}
+        {
+            title: "{{ x.estados }}",
+            start: "{{ x.date }}T{{ x.hora_inicio }}",
+            end: "{{ x.date }}T{{ x.hora_fin }}",
+        },
+    {% endfor %}
+];
+
+
+
+<!--  -->
+  <link id="u-theme-google-font" rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:100,100i,300,300i,400,400i,500,500i,700,700i,900,900i|Open+Sans:300,300i,400,400i,500,500i,600,600i,700,700i,800,800i">
+</head>
+
+    <script type="application/ld+json">{
+		"@context": "http://schema.org",
+		"@type": "Organization",
+		"name": ""
+}</script>
+    <meta name="theme-color" content="#478ac9">
+    <meta property="og:title" content="Casa">
+    <meta property="og:type" content="website">
+
+  <body data-path-to-root="/" data-include-products="false" class="u-body u-overlap u-overlap-contrast u-overlap-transparent u-xl-mode" data-lang="es">
+       
+    <section class="u-align-center u-clearfix u-palette-5-dark-3 u-section-1" id="carousel_2d24">
+      {% if request.user.is_authenticated %} 
+      <a href="{% url 'exit' %}" class="boton_logout">
+          
+          Hola {{ request.user.username }}
+          <img src="{% static 'img\cerrar-sesion.png' %}" alt="Logout Icon" width="20" height="20">
+      </a>
+  
+</a>
+{% else %}
+  <a class="nav-link fw-bold py-1 px-0" href="{% url 'login' %}">Ingresar</a>
+{% endif %}
+
+        <div class="u-border-9 u-border-white u-expanded-width u-line u-line-horizontal u-line-1"></div>
+        <div class="u-container-style u-group u-palette-2-base u-radius-10 u-shape-round u-group-1">
+          <div class="red-box">
+            <h4 class="u-text-1fablab">RESERVAS FABLAB</h4>
+        </div>
+        </div>
+        <div id="calendar" class="u-expanded-width u-table"></div>
+</body></html> 
+
+
+
+
+<!-- Modal -->
+<div class="modal fade" id="modal_reservas" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" >
+
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Ingrese sus datos</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form id="form_reserva" method="post" action="{% url 'datos_reservas' %}">
+          {% csrf_token %}
+    <div>
+            <!-- <label for="">Id Reserva
+            <input type="text" class="form-control" id="idR" value="{{request.user.username}}" disabled>
+          </label>
+          <label for="">Id producto
+          <input type="text" class="form-control" id="idE">
+        </label> -->
+            
+        <label for="">Nombre completo
+          <input type="text" class="form-control" id="nombre" name="nombre">
+      </label>
+      <label for="">Correo
+          <input type="text" class="form-control" id="correo" name="correo">
+      </label>
+      <label for="elementos_stock">Equipos a utilizar
+          <div class="form-group">
+              {% for elemento in elementos_stock %}
+              <div class="form-check form-check-inline">
+                  <input type="checkbox" class="form-check-input" id="{{ elemento.idE }}" name="equipos_seleccionados" value="{{ elemento.idE }}">
+                  <label class="form-check-label" for="{{ elemento.idE }}">{{ elemento.nomE }}</label>
+              </div>
+              {% endfor %}
+            </div>
+          <button type="submit" class="btn btn-primary btn-lg btn-block" id="btnConfirmarReserva">Confirmar reserva</button>
+        </form>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer" >
+        <button type="button" class="btn btn-primary btn-lg btn-block" data-dismiss="modal">Cerrar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- <script>
+  document.getElementById('form_reserva').addEventListener('btnConfirmarReserva', function(event) {
+      event.preventDefault();
+
+      // Obtener datos del formulario
+      const formData = new FormData(event.target);
+
+      // Enviar datos al servidor usando AJAX (puedes usar fetch o jQuery.ajax)
+      fetch('/modal_reservas/', {
+          method: 'POST',
+          body: formData
+      })
+      .then(response => response.json())
+      .then(data => {
+          alert(data.message);
+          // Puedes cerrar el modal o realizar otras acciones después de guardar los datos
+      })
+      .catch(error => {
+          console.error('Error:', error);
+          alert('Hubo un error al procesar la solicitud.');
+      });
+  });
+</script> -->
+
+<script>
+$(document).ready(function() {
+    $('#form_reserva').submit(function(event) {
+        event.preventDefault();
+
+        // Obtener el token CSRF
+        var csrftoken = $("[name=csrfmiddlewaretoken]").val();
+
+        // Obtener los datos del formulario serializados
+        var formData = $(this).serialize();
+
+        // Agregar el token CSRF a los datos del formulario
+        formData += '&csrfmiddlewaretoken=' + csrftoken;
+
+        // Enviar datos al servidor usando AJAX con jQuery
+        $.ajax({
+            type: 'POST',
+            url: '{% url "datos_reservas" %}',
+            data: formData,
+            dataType: "json",
+            success: function(data) {
+                alert(data.message);
+                setTimeout(function() {
+                    location.reload();
+                }, 1000);
+            },
+            error: function(error) {
+                alert('Hubo un error al procesar la solicitud.');
+            }
+        });
+    });
+});
+</script>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    var eventosDisponibles = document.querySelectorAll('.disponible-event');
+
+    eventosDisponibles.forEach(function(evento) {
+      evento.addEventListener('click', function() {
+        $('#modal_reservas').modal('show');
+      });
+    });
+
+    // Agrega un manejador de eventos para el botón de reserva dentro del modal
+    $('#modal_reservas').on('click', '.btn-reserve', function() {
+      // Realiza las acciones necesarias al hacer clic en el botón de reserva
+      alert('Confirmar reserva');
+      // Aquí puedes agregar lógica adicional, como enviar una solicitud de reserva al servidor, etc.
+    });
+  });
+</script>
+
+
+
+<!-- ---------------------------------------------------------------------------                     -->
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    var calendarUI = document.getElementById('calendar');
+    var calendar = new FullCalendar.Calendar(calendarUI, {
+      themeSystem: 'bootstrap5',
+      initialView: 'timeGridWeek',
+      slotMinTime: '08:00:00',
+      slotMaxTime: '18:00:00',
+      slotDuration:'01:00:00',
+      allDaySlot: false,
+      headerToolbar: {},
+      events: [
+  {% for bloque in bloques %}
+    {
+      title: "{{ bloque.estados }}",
+      start: "{{ bloque.fecha|date:'Y-m-d' }}T{{ bloque.hora_inicio|time:'H:i:s' }}",
+      end: "{{ bloque.fecha|date:'Y-m-d' }}T{{ bloque.hora_fin|time:'H:i:s' }}",
+      {% if bloque.estados == 'Disponible' %}
+        className: 'disponible-event',
+        buttonText: 'Reservar',
+      {% else %}
+        className: 'reservado-event',
+        {% endif %}
+    },
+  {% endfor %}
+],
+    
+      eventContent: function(arg) {
+        var buttonHtml = '<button type="button" class="btn btn-primary btn-reserve" data-event-id="' + arg.event.id + '">Reservar</button>';
+        return {
+          html: '<div class="fc-content" style="position: relative; height: 100%; padding: 0; margin: 0;">' +
+                '<p style="margin-bottom: 5px;">' + arg.event.title + '</p>' +
+                '<p style="margin-bottom: 5px;">Inicio: ' + arg.event.start.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) + '</p>' +
+                '<p style="margin-bottom: 5px;">Fin: ' + arg.event.end.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) + '</p>' +
+                '<div style="position: absolute; bottom: 5px; right: 5px;">' + buttonHtml + '</div>' +
+                '</div>',
+        };
+      },
+      eventClick: function(info) {
+        if (info.jsEvent.target.classList.contains('btn-reserve')) {
+          // Bootstrap utiliza 'show' para activar el modal
+          $('#modal_reservas').modal('show');
+        } else {
+          // Puedes agregar lógica adicional si es necesario
+        }
+      }
+    });
+
+    calendar.render();
+    calendar.setOption('locale', 'es');
+  });
+</script>
