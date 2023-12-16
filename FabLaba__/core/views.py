@@ -8,6 +8,7 @@ def exit(request):
     logout(request)
     return redirect('inicio')  # Redirige a la página de inicio
 
+
 def inicio(request):
     if request.method == 'POST':
         username = request.POST['username']
@@ -19,7 +20,7 @@ def inicio(request):
             user_groups = user.groups.all()
             for group in user_groups:
                 if group.name == "Administrador":
-                    return redirect('/admin')  # Redirige a la página de admin
+                    return redirect('/admin_view')  # Redirige a la página de admin
             # Si el usuario no es Administrador, redirige a la página '/horario2'
             return redirect('/horario2')
 
@@ -31,6 +32,9 @@ def inicio(request):
 
 def reportes(request):
     return render(request, "core/reportes.html")
+
+def Admin_view(request):
+    return render(request, "core/admin_view.html")
 
 
 

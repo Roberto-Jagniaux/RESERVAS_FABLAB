@@ -1,0 +1,56 @@
+{%load static%}
+<!DOCTYPE html>
+<html style="font-size: 16px;" lang="es">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="utf-8">
+    <meta name="keywords" content="">
+    <meta name="description" content="">
+    <title>Login</title>
+    <link rel="stylesheet" href="{% static 'css/admin_view.css' %}" media="screen">
+    <link id="u-theme-google-font" rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:100,100i,300,300i,400,400i,500,500i,700,700i,900,900i|Open+Sans:300,300i,400,400i,500,500i,600,600i,700,700i,800,800i">
+    <meta name="theme-color" content="#478ac9">
+    <meta property="og:title" content="Login">
+    <meta property="og:type" content="website">
+    <meta data-intl-tel-input-cdn-path="intlTelInput/">
+    
+</head>
+
+<body>  
+    <section>
+        <div class="u-clearfix u-sheet u-sheet-1">
+        <div class="u-container-style u-group u-palette-2-base u-radius-10 u-shape-round u-group-1">
+          <div class="red-box">
+        </div>
+  </div>
+  <img class="u-image-1" src="{% static 'img\Calada.png' %}" alt="">
+  <div class="contenedor-botones">
+    <div class="contenedor-boton">
+      <a href="/reportes" class="boton1">REPORTES RESERVAS</a>
+      <div class="u-container-style u-group u-radius-30 u-shape-round u-white u-group-2">Acá podrás descargar reportes de las reservas 
+        dentro de un perido de fechas especificos.
+      </div>
+    </div>
+  
+    <div class="contenedor-boton">
+      <a href="/admin" class="boton2">PANEL ADMINISTRADOR</a>
+      <div class="u-container-style u-group u-radius-30 u-shape-round u-white u-group-2 " >Acceso a panel de administrador 
+        donde podrás:
+        <ul>
+          <li>Crear bloques de horarios.</li>
+          <li>Definir equipos disponibles.</li>
+          <li>Crear nuevos usuarios.</li>
+        </ul></div>
+    </div>
+  
+    <div class="contenedor-boton">
+      <a href="/horario2" class="boton3">CALENDARIO SEMANAL</a>
+      <div class="u-container-style u-group u-radius-30 u-shape-round u-white u-group-2">Acá podrás ver el calendario semanal
+         con sus bloques de horarios y estados.</div>
+    </div>
+  </div>
+
+    </div>
+</section>
+</body>
+</html>

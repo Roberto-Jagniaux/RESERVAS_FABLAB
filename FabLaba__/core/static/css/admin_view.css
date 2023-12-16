@@ -1,0 +1,192 @@
+ul {
+    list-style-type: none;
+    padding: 0;
+  }
+
+  ul li {
+    margin-bottom: 10px;
+  }
+.contenedor-botones {
+    margin-top: 60px;
+    display: flex;
+    justify-content: space-between; /* Distribuye los elementos a lo largo del contenedor */
+  }
+  
+  /* Reglas de estilo para el botón1 */
+  .boton1 {
+    padding: 10px 40px;
+    font-size: 16px;
+    text-align: center;
+    text-decoration: none;
+    cursor: pointer;
+    border-radius: 5px;
+    background-color: #ff7300; /* Color de fondo */
+    color: #ffffff; /* Color del texto */
+    border: 1px solid #ff7300; /* Borde del botón */
+    font-weight: bold;
+  }
+  
+  /* Cambiar estilos cuando el mouse pasa sobre el botón1 */
+  .boton1:hover {
+    background-color: #b4947a;
+    color: white;
+  }
+  
+  /* Reglas de estilo para el botón2 */
+  .boton2 {
+    padding: 10px 29px; /* Ajusta el relleno superior e inferior según sea necesario */
+    font-size: 16px;
+    text-align: center;
+    text-decoration: none;
+    cursor: pointer;
+    border-radius: 5px;
+    background-color: #ff7300; /* Color de fondo */
+    color: #ffffff; /* Color del texto */
+    border: 1px solid #ff7300; /* Borde del botón */
+    font-weight: bold;
+  }
+  
+  /* Cambiar estilos cuando el mouse pasa sobre el botón2 */
+  .boton2:hover {
+    background-color: #b4947a;
+    color: white;
+  }
+  
+  /* Reglas de estilo para el botón3 */
+  .boton3 {
+    padding: 10px 40px;
+    font-size: 16px;
+    text-align: center;
+    text-decoration: none;
+    cursor: pointer;
+    border-radius: 5px;
+    background-color: #ff7300; /* Color de fondo */
+    color: #ffffff; /* Color del texto */
+    border: 1px solid #ff7300; /* Borde del botón */
+    font-weight: bold;
+  }
+  
+  /* Cambiar estilos cuando el mouse pasa sobre el botón3 */
+  .boton3:hover {
+    background-color: #b4947a;
+    color: white;
+  }
+
+.red-box {
+    background-color: #ff7300; 
+    border-radius: 5px; 
+    margin-top: 5px; 
+    position: relative; 
+    max-width: 400px;
+    text-align: center;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+body {
+    font-family: "Roboto",sans-serif;
+    background-color: #1d1d1b;
+}
+
+
+
+.u-sheet-1 {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.u-border-9 {
+    border-width: 2px;
+}
+
+.u-line-1 {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%); 
+    width: 80%; 
+    border: 4px solid #ffffff;
+    margin-top: 12px; 
+}
+
+.u-group-1 {
+    margin-top: 30px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.u-text-1fablab {
+    font-size: 28px;
+    margin: 20px 0;
+    color: #ffffff;
+    text-align: center;
+    font-family: Arial, Helvetica, sans-serif ;
+}
+
+.u-group-2 {
+    margin-top: 20px;
+    background-color: #ffa94d;
+    box-shadow: 0px 0px 20px #1d1d1b(0, 0, 0, 0.1);
+    padding: 40px;
+    border-radius: 15px;
+    max-width: 160px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.u-image-1 {
+    max-width: 20%;
+    height: auto;
+    margin-bottom: 25px;
+    margin-left: auto;
+    margin-right: auto;
+    display: block; 
+}
+
+
+.u-text-2 {
+    margin-top: 20px;
+    text-align: center;
+}
+
+
+
+.form-control {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #ffffff;
+    border-radius: 5px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.u-btn-1 {
+    display: block;
+    padding: 10px 20px;
+    text-decoration: none;
+    background-color: #ff7300;
+    color: #ffffff;
+    border-radius: 25px;
+    transition: background-color 0.3s;
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center;
+}
+
+
+.u-btn-1:hover {
+    background-color: #ff7300;
+}
+
+.d-flex {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.u-text-body-color {
+    color: #1d1d1b;
+}
+
