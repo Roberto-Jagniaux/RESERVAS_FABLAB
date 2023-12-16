@@ -13,6 +13,7 @@ urlpatterns = [
     path('horario2/modal_reservas/', bloque_views.datos_reservas, name='modal_reservas'),
     path('logout/', core_views.exit, name='exit'),
     path('admin/', admin.site.urls),
+    path('admin_view/', core_views.Admin_view, name='Admin_view'),
     path('reportes/', core_views.reportes, name='reportes'),
     path('accounts/', include('django.contrib.auth.urls')),
 
