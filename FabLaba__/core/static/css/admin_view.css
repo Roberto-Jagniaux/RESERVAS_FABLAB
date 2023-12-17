@@ -11,7 +11,19 @@ ul {
     display: flex;
     justify-content: space-between; /* Distribuye los elementos a lo largo del contenedor */
   }
-  
+
+  .boton_logout {
+    padding: 10px 40px;
+    font-size: 16px;
+    text-align: center;
+    text-decoration: none;
+    cursor: pointer;
+    border-radius: 5px;
+    background-color: #ff7300; /* Color de fondo */
+    color: #ffffff; /* Color del texto */
+    border: 1px solid #ff7300; /* Borde del botón */
+    font-weight: bold;
+  } 
   /* Reglas de estilo para el botón1 */
   .boton1 {
     padding: 10px 40px;
