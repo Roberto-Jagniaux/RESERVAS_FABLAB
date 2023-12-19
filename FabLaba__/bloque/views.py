@@ -201,3 +201,11 @@ def confirmar_reserva(request):
         return JsonResponse({'message': 'Error en la solicitud.'}, status=400)
 
 
+def obtener_stock_disponible(request, bloque_id):
+    try:
+        bloque = Bloque.objects.get(id=bloque_id)
+        stock_disponible = bloque.idE.all().exclude(reserva__idB=bloque)
+        stock_info = [{'id': stock.idE, 'nombre': stock.nomE} for stock in stock_disponible]
+        return JsonResponse({'stock_disponible': stock_info})
+    except Bloque.DoesNotExist:
+        return JsonResponse({'error': 'Bloque no encontrado'}, status=404)

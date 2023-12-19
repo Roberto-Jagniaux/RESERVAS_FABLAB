@@ -43,7 +43,6 @@ class reserva(models.Model):
     idR = models.AutoField(primary_key=True)
     nomA = models.CharField(max_length=25)
     correo = models.CharField(max_length=50)
-    idE = models.ManyToManyField(stock)
     idB = models.ForeignKey(Bloque, null=True, on_delete=models.CASCADE)
 
     def save(self, *args, **kwargs):

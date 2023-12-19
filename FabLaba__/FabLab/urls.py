@@ -17,5 +17,6 @@ urlpatterns = [
     path('reportes/', core_views.reportes, name='reportes'),
     path('confirmar_reserva/', bloque_views.confirmar_reserva, name='confirmar_reserva'),
     path('accounts/', include('django.contrib.auth.urls')),
+    path('obtener_stock_disponible/<int:bloque_id>/', bloque_views.obtener_stock_disponible, name='obtener_stock_disponible'),
 
 ]

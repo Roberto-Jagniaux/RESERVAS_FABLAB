@@ -49,7 +49,7 @@
 <!-- Modal -->
 <!-- ... (código existente) ... -->
 
-<!-- Modal -->
+
 <div class="modal fade" id="modal_reservas" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" >
 
   <div class="modal-dialog" role="document">
@@ -77,6 +77,7 @@
               <div class="form-group">
                 {% for elemento in elementos_stock %}
                   <div class="form-check form-check-inline">
+                    <div id="stock_disponible"></div>
                     <input type="checkbox" class="form-check-input" id="{{ elemento.idE }}" name="equipos_seleccionados" value="{{ elemento.idE }}">
                     <label class="form-check-label" for="{{ elemento.idE }}">{{ elemento.nomE }}</label>
                   </div>
@@ -94,7 +95,85 @@
   </div>
 </div>
 
-<!-- ... (código existente) ... -->
+
+<!-- Agrega esto al final de tu script en la plantilla HTML -->
+<script>
+$(document).ready(function() {
+  $('#form_reserva').submit(function(event) {
+    event.preventDefault();
+
+    // Obtener el token CSRF
+    var csrftoken = $("[name=csrfmiddlewaretoken]").val();
+
+    // Obtener los datos del formulario serializados
+    var formData = $(this).serialize();
+
+    // Agregar el token CSRF a los datos del formulario
+    formData += '&csrfmiddlewaretoken=' + csrftoken;
+
+    // Obtener el ID del bloque desde el campo oculto en el modal
+    var bloqueID = $('#modal_reservas #bloque_id').val();
+    formData += '&bloque_id=' + bloqueID;
+
+    // Enviar datos al servidor usando AJAX con jQuery
+    $.ajax({
+      type: 'POST',
+      url: '{% url "confirmar_reserva" %}',  // Asegúrate de tener una URL adecuada en tu aplicación Django
+      data: formData,
+      dataType: "json",
+      success: function(data) {
+        alert(data.message);
+        setTimeout(function() {
+          location.reload();
+        }, 1000);
+      },
+      error: function(error) {
+        alert('Hubo un error al procesar la solicitud.');
+      }
+    });
+  });
+
+  // Agrega un manejador de eventos para mostrar el stock disponible en el modal
+  $('#modal_reservas').on('show.bs.modal', function (event) {
+    var button = $(event.relatedTarget);  // Botón que activó el modal
+    var bloqueID = button.data('event-id');  // ID del bloque asociado al botón
+
+    // Verifica si el ID del bloque es válido
+    if (bloqueID !== undefined) {
+      // Realiza una solicitud AJAX para obtener el stock disponible
+      $.ajax({
+        type: 'GET',
+        url: '/obtener_stock_disponible/' + bloqueID + '/',  // Ajusta la URL según tu configuración de URL en Django
+        dataType: 'json',
+        success: function(data) {
+          // Actualiza el contenido del modal con la información del stock
+          var stockContainer = $('#modal_reservas #stock_disponible');
+          stockContainer.empty();
+
+          if (data.stock_disponible.length > 0) {
+            stockContainer.append('<p>Stock Disponible:</p>');
+            var ul = $('<ul>');
+            data.stock_disponible.forEach(function(stock) {
+              ul.append('<li>' + stock.nombre + '</li>');
+            });
+            stockContainer.append(ul);
+          } else {
+            stockContainer.append('<p>No hay stock disponible.</p>');
+          }
+        },
+        error: function(error) {
+          console.error('Error al obtener el stock disponible:', error);
+        }
+      });
+    } else {
+      console.error('ID del bloque no definido.');
+    }
+  });
+});
+
+</script>
+
+<!-- ... ajax funcionando(código existente) 
 
 
 
@@ -137,7 +216,7 @@ $(document).ready(function() {
 });
 
 
-</script>
+</script>... -->
 
 <script>
   document.addEventListener('DOMContentLoaded', function() {
@@ -173,38 +252,43 @@ $(document).ready(function() {
       allDaySlot: false,
       headerToolbar: {},
       events: [
-  {% for bloque in bloques %}
-    {
-      id: "{{ bloque.id }}", 
-      title: "{{ bloque.estados }}",
-      start: "{{ bloque.fecha|date:'Y-m-d' }}T{{ bloque.hora_inicio|time:'H:i:s' }}",
-      end: "{{ bloque.fecha|date:'Y-m-d' }}T{{ bloque.hora_fin|time:'H:i:s' }}",
-      {% if bloque.estados == 'Disponible' %}
-        className: 'disponible-event',
-        buttonText: 'Reservar',
-      {% else %}
-        className: 'reservado-event',
-        {% endif %}
-    },
-  {% endfor %}
-],
-    
-eventContent: function(arg) {
-  var bloqueID = arg.event.id;  // Obtén el ID del bloque asociado al evento
+        {% for bloque in bloques %}
+          {
+            id: "{{ bloque.id }}", 
+            title: "{{ bloque.estados }}",
+            start: "{{ bloque.fecha|date:'Y-m-d' }}T{{ bloque.hora_inicio|time:'H:i:s' }}",
+            end: "{{ bloque.fecha|date:'Y-m-d' }}T{{ bloque.hora_fin|time:'H:i:s' }}",
+            {% if bloque.estados == 'Disponible' %}
+              className: 'disponible-event',
+              buttonText: 'Reservar',
+            {% else %}
+              className: 'reservado-event',
+            {% endif %}
+          },
+        {% endfor %}
+      ],
 
-  var buttonHtml = '<button type="button" class="btn1 btn-primary btn-reserve" data-event-id="' + bloqueID + '">Reservar</button>';
-  return {
-    html: '<div class="fc-content" style="position: relative; height: 100%; padding: 0; margin: 0;">' +
-      '<p style="margin-bottom: 5px;">' + arg.event.title + '</p>' +
-      '<p style="margin-bottom: 5px;">ID: ' + bloqueID + '</p>' +  // Agrega esta línea para mostrar el ID
-      '<div style="display: flex; justify-content: space-between; margin-bottom: 5px;">' +
-      '<p style="margin-right: 10px;">Inicio: ' + arg.event.start.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) + '</p>' +
-      '<p>Fin: ' + arg.event.end.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) + '</p>' +
-      '</div>' +
-      '</div>' +
-      '<div style="text-align: center; margin-top: -10px;">' + buttonHtml + '</div>',
-  };
-},
+      eventContent: function(arg) {
+        var bloqueID = arg.event.id;
+        var buttonHtml = '';
+
+        // Agrega condición para mostrar el botón solo si el estado es 'Disponible'
+        if (arg.event.title === 'Disponible') {
+          buttonHtml = '<button type="button" class="btn1 btn-primary btn-reserve" data-event-id="' + bloqueID + '">Reservar</button>';
+        }
+
+        return {
+          html: '<div class="fc-content" style="position: relative; height: 100%; padding: 0; margin: 0;">' +
+            '<p style="margin-bottom: 5px;">' + arg.event.title + '</p>' +
+            '<p style="margin-bottom: 5px;">ID: ' + bloqueID + '</p>' +
+            '<div style="display: flex; justify-content: space-between; margin-bottom: 5px;">' +
+            '<p style="margin-right: 10px;">Inicio: ' + arg.event.start.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) + '</p>' +
+            '<p>Fin: ' + arg.event.end.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) + '</p>' +
+            '</div>' +
+            '</div>' +
+            '<div style="text-align: center; margin-top: -10px;">' + buttonHtml + '</div>',
+        };
+      },
 eventClick: function(info) {
         if (info.jsEvent.target.classList.contains('btn-reserve')) {
           // Bootstrap utiliza 'show' para activar el modal
