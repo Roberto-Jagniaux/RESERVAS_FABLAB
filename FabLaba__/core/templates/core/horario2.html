@@ -7,7 +7,6 @@
   <meta name="keywords" content="">
   <meta name="description" content="">
   <title>Horario</title>
-
   <link rel="stylesheet" href="{% static 'fullcalendar/lib/main.css' %}" media="screen">
   <script src="{% static 'fullcalendar/lib/main.js' %}"></script>
   <script src="{% static 'fullcalendar/lib/locales-all.js' %}"></script>
@@ -20,31 +19,15 @@
   <link href="https://cdn.jsdelivr.net/npm/@fullcalendar/daygrid@5.11.5/main.min.css" rel="stylesheet">
   <link rel="stylesheet" href="{% static 'css/horario.css' %}" media="screen">
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.js"></script>
-
-
-
-   
   <link id="u-theme-google-font" rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:100,100i,300,300i,400,400i,500,500i,700,700i,900,900i|Open+Sans:300,300i,400,400i,500,500i,600,600i,700,700i,800,800i">
 </head>
 
-    <script type="application/ld+json">{
-		"@context": "http://schema.org",
-		"@type": "Organization",
-		"name": ""
-}</script>
-    <meta name="theme-color" content="#478ac9">
-    <meta property="og:title" content="Casa">
-    <meta property="og:type" content="website">
-
   <body data-path-to-root="/" data-include-products="false" class="u-body u-overlap u-overlap-contrast u-overlap-transparent u-xl-mode" data-lang="es">
-       
     <section class="u-align-center u-clearfix u-palette-5-dark-3 u-section-1" id="carousel_2d24">
       {% if request.user.is_authenticated %} 
       <a href="{% url 'exit' %}" class="boton_logout">
-          
         Cerrar sesión
         <img src="{% static 'img\cerrar-sesion.png' %}" alt="Logout Icon" width="20" height="20">
-      </a>
       </a>
   
 </a>
@@ -59,13 +42,16 @@
         </div>
         </div>
         <div id="calendar" class="u-expanded-width u-table"></div>
-</body></html> 
-
+</body> </html>
 
 
 
 <!-- Modal -->
+<!-- ... (código existente) ... -->
+
+<!-- Modal -->
 <div class="modal fade" id="modal_reservas" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" >
+
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
@@ -75,36 +61,42 @@
         </button>
       </div>
       <div class="modal-body">
-        <form id="form_reserva" method="post" action="/horario2/datos_reservas/">
+
+        <form id="form_reserva" method="post" action="{% url 'datos_reservas' %}">
           {% csrf_token %}
-    <div>
-        <label for="">Nombre completo
-          <input type="text" class="form-control" id="nombre" name="nombre">
-      </label>
-      <label for="">Correo
-          <input type="text" class="form-control" id="correo" name="correo">
-      </label>
-      <label for="elementos_stock">Equipos a utilizar
-          <div class="form-group">
-              {% for elemento in elementos_stock %}
-              <div class="form-check form-check-inline">
-                  <input type="checkbox" class="form-check-input" id="{{ elemento.idE }}" name="equipos_seleccionados" value="{{ elemento.idE }}">
-                  <label class="form-check-label" for="{{ elemento.idE }}">{{ elemento.nomE }}</label>
+          <div>
+            <input type="hidden" id="bloque_id" name="bloque_id" value="">
+
+            <label for="">Nombre completo
+              <input type="text" class="form-control" id="nombre" name="nombre">
+            </label>
+            <label for="">Correo
+              <input type="text" class="form-control" id="correo" name="correo">
+            </label>
+            <label for="elementos_stock">Equipos a utilizar
+              <div class="form-group">
+                {% for elemento in elementos_stock %}
+                  <div class="form-check form-check-inline">
+                    <input type="checkbox" class="form-check-input" id="{{ elemento.idE }}" name="equipos_seleccionados" value="{{ elemento.idE }}">
+                    <label class="form-check-label" for="{{ elemento.idE }}">{{ elemento.nomE }}</label>
+                  </div>
+                {% endfor %}
               </div>
-              {% endfor %}
-            </div>
-          <button type="submit" class="btn1 btn-primary btn-lg btn-block" id="btnConfirmarReserva">Confirmar reserva</button>
-           <div class="modal-footer" >
+              <button type="submit" class="btn1 btn-primary btn-lg btn-block" id="btnConfirmarReserva">Confirmar reserva</button>
+            </label>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer" >
         <button type="button" class="btn btn-primary btn-lg btn-block" data-dismiss="modal">Cerrar</button>
       </div>
-        </form>
-          </div>
-        </div>
-      </div>
-     
     </div>
   </div>
 </div>
+
+<!-- ... (código existente) ... -->
+
+
 
 
 <script>
@@ -121,10 +113,14 @@ $(document).ready(function() {
         // Agregar el token CSRF a los datos del formulario
         formData += '&csrfmiddlewaretoken=' + csrftoken;
 
+        // Obtener el ID del bloque desde el campo oculto en el modal
+        var bloqueID = $('#modal_reservas #bloque_id').val();
+        formData += '&bloque_id=' + bloqueID;
+
         // Enviar datos al servidor usando AJAX con jQuery
         $.ajax({
             type: 'POST',
-            url: '/horario2/datos_reservas/',
+            url: '{% url "confirmar_reserva" %}',  // Asegúrate de tener una URL adecuada en tu aplicación Django
             data: formData,
             dataType: "json",
             success: function(data) {
@@ -139,6 +135,8 @@ $(document).ready(function() {
         });
     });
 });
+
+
 </script>
 
 <script>
@@ -175,12 +173,13 @@ $(document).ready(function() {
       allDaySlot: false,
       headerToolbar: {},
       events: [
-  {% for Bloque in bloques %}
+  {% for bloque in bloques %}
     {
-      title: "{{ Bloque.estados }}",
-      start: "{{ Bloque.fecha|date:'Y-m-d' }}T{{ Bloque.hora_inicio|time:'H:i:s' }}",
-      end: "{{ Bloque.fecha|date:'Y-m-d' }}T{{ Bloque.hora_fin|time:'H:i:s' }}",
-      {% if Bloque.estados == 'Disponible' %}
+      id: "{{ bloque.id }}", 
+      title: "{{ bloque.estados }}",
+      start: "{{ bloque.fecha|date:'Y-m-d' }}T{{ bloque.hora_inicio|time:'H:i:s' }}",
+      end: "{{ bloque.fecha|date:'Y-m-d' }}T{{ bloque.hora_fin|time:'H:i:s' }}",
+      {% if bloque.estados == 'Disponible' %}
         className: 'disponible-event',
         buttonText: 'Reservar',
       {% else %}
@@ -190,23 +189,29 @@ $(document).ready(function() {
   {% endfor %}
 ],
     
-      eventContent: function(arg) {
-        var buttonHtml = '<button type="button" class="btn1 btn-primary btn-reserve" data-event-id="' + arg.event.id + '">Reservar</button>';
-        return {
-          html: '<div class="fc-content" style="position: relative; height: 100%; padding: 0; margin: 0;">' +
-          '<p style="margin-bottom: 5px;">' + arg.event.title + '</p>' +
-          '<div style="display: flex; justify-content: space-between; margin-bottom: 5px;">' +
-          '<p style="margin-right: 10px;">Inicio: ' + arg.event.start.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) + '</p>' +
-          '<p>Fin: ' + arg.event.end.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) + '</p>' +
-          '</div>' +
-          '</div>' +
-          '<div style="text-align: center; margin-top: -10px;">' + buttonHtml + '</div>',
-        };
-      },
-      eventClick: function(info) {
+eventContent: function(arg) {
+  var bloqueID = arg.event.id;  // Obtén el ID del bloque asociado al evento
+
+  var buttonHtml = '<button type="button" class="btn1 btn-primary btn-reserve" data-event-id="' + bloqueID + '">Reservar</button>';
+  return {
+    html: '<div class="fc-content" style="position: relative; height: 100%; padding: 0; margin: 0;">' +
+      '<p style="margin-bottom: 5px;">' + arg.event.title + '</p>' +
+      '<p style="margin-bottom: 5px;">ID: ' + bloqueID + '</p>' +  // Agrega esta línea para mostrar el ID
+      '<div style="display: flex; justify-content: space-between; margin-bottom: 5px;">' +
+      '<p style="margin-right: 10px;">Inicio: ' + arg.event.start.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) + '</p>' +
+      '<p>Fin: ' + arg.event.end.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) + '</p>' +
+      '</div>' +
+      '</div>' +
+      '<div style="text-align: center; margin-top: -10px;">' + buttonHtml + '</div>',
+  };
+},
+eventClick: function(info) {
         if (info.jsEvent.target.classList.contains('btn-reserve')) {
           // Bootstrap utiliza 'show' para activar el modal
           $('#modal_reservas').modal('show');
+
+          // Agrega el ID del bloque al input hidden en el modal
+          $('#modal_reservas #bloque_id').val(info.event.id);
         } else {
           // Puedes agregar lógica adicional si es necesario
         }

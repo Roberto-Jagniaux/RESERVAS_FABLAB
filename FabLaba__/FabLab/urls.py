@@ -15,6 +15,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('admin_view/', core_views.Admin_view, name='Admin_view'),
     path('reportes/', core_views.reportes, name='reportes'),
+    path('confirmar_reserva/', bloque_views.confirmar_reserva, name='confirmar_reserva'),
     path('accounts/', include('django.contrib.auth.urls')),
 
 ]

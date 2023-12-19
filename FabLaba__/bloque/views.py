@@ -7,6 +7,8 @@ from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_protect
 from django.views.decorators.http import require_http_methods
 from django.views.decorators.csrf import csrf_exempt
+from django.shortcuts import get_object_or_404
+
 import json
 
 @login_required
@@ -82,6 +84,27 @@ def datos_reservas(request):
         return JsonResponse({'message': 'Método no permitido.'}, status=405)"""
 
 
+"""
+working
+def datos_reservas(request):
+    if request.method == 'POST':
+        nombre = request.POST.get('nombre')
+        correo = request.POST.get('correo')
+        equipos_seleccionados = request.POST.getlist('equipos_seleccionados', [])
+
+        # Crear una nueva reserva
+        nueva_reserva = reserva(nomA=nombre, correo=correo)
+        nueva_reserva.save()  # Guardar la reserva antes de asignar la relación many-to-many
+
+        # Asignar equipos seleccionados a la reserva
+        nueva_reserva.idE.set(equipos_seleccionados)
+
+        return JsonResponse({'message': 'Reserva Hecha Exitosamente.'})
+    else:
+        return JsonResponse({'message': 'Método no permitido.'}, status=405)
+
+from django.http import JsonResponse
+import json"""
 
 def datos_reservas(request):
     if request.method == 'POST':
@@ -130,8 +153,51 @@ def datos_reservas(request):
         return JsonResponse({'mensaje': 'Método no permitido'}, status=405)"""
 
 
+"""
+cone ste funciona el cambio de boton a confirmado
+def confirmar_reserva(request):
+    if request.method == 'POST':
+        bloque_id = request.POST.get('bloque_id')
+        # Obtén el objeto Bloque
+        bloque = get_object_or_404(Bloque, id=bloque_id)
+        
+        # Actualiza el estado del bloque a 'Confirmado'
+        bloque.estados = 'Reservado'
+        bloque.save()
+
+        # Puedes realizar otras acciones aquí según tus necesidades
+
+        return JsonResponse({'message': 'Reserva confirmada satisfactoriamente.'})
+    else:
+        return JsonResponse({'error': 'Método no permitido.'})"""
 
 
+from django.shortcuts import render, get_object_or_404
+from django.http import JsonResponse
+from .models import Bloque, reserva
 
+def confirmar_reserva(request):
+    if request.method == 'POST':
+        bloque_id = request.POST.get('bloque_id')
+        nombre = request.POST.get('nombre')
+        correo = request.POST.get('correo')
+        equipos_seleccionados = request.POST.getlist('equipos_seleccionados')
+
+        # Obtener el bloque correspondiente
+        bloque = get_object_or_404(Bloque, id=bloque_id)
+
+        # Crear la reserva y asociarla al bloque
+        reserva_obj = reserva.objects.create(nomA=nombre, correo=correo, idB=bloque)
+
+        # Asociar los equipos seleccionados al bloque
+        bloque.idE.set(equipos_seleccionados)
+
+        # Actualizar el estado del bloque a 'Reservado'
+        bloque.estados = 'Reservado'
+        bloque.save()
+
+        return JsonResponse({'message': 'Reserva confirmada correctamente.'})
+    else:
+        return JsonResponse({'message': 'Error en la solicitud.'}, status=400)
 
 
