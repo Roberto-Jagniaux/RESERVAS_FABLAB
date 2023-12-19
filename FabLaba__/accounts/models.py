@@ -4,9 +4,18 @@ from django.db.models.signals import post_save
 
 # Perfil de usuario
 
+
+
+class Project(models.Model):
+    name = models.CharField(max_length=100, verbose_name='Nombre del Proyecto')
+
+    def __str__(self):
+        return self.name
+
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile',verbose_name='Usuario')
     image = models.ImageField(default='users/usuario_defecto.jpg', upload_to='users/', verbose_name='imagen de perfil')
+    project = models.ForeignKey(Project, on_delete=models.SET_NULL, null=True, blank=True, verbose_name='Proyecto')
 
     class Meta:
         verbose_name='perfil'

@@ -1,60 +1,85 @@
 
 from django.shortcuts import render
-from .models import bloque,stock,reserva
+from .models import Bloque,stock,reserva
 from datetime import datetime,timedelta
 from django.http import JsonResponse
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_protect
 from django.views.decorators.http import require_http_methods
-
-
+from django.views.decorators.csrf import csrf_exempt
 import json
 
 @login_required
 def bloques(request):
-    bloques = bloque.objects.all()
+    bloques = Bloque.objects.all()
     today = datetime.now().date()
     elementos_stock = stock.objects.all()
 
 
     return render(request, 'core/horario2.html', {'bloques': bloques,'today':today,'elementos_stock':elementos_stock})
 
-
 @login_required
 def horario2(request):
     return render(request,"core/horario2.html")
 
-'''def fechas_semana(request):
-    # Obtén la fecha actual
-    today = datetime.now().date()
 
-    # Calcula la fecha de inicio de la semana (lunes)
-    start_of_week = today - timedelta(days=today.weekday())
+"""@csrf_exempt
+def datos_reservas(request):
+    if request.method == 'POST':
+        try:
+            nombre = request.POST.get('nombre')
+            correo = request.POST.get('correo')
+            id_bloque = request.POST.get('id_bloque', '')
 
-    # Calcula la fecha de fin de la semana (domingo)
-    end_of_week = start_of_week + timedelta(days=6)
+            # Verificar si id_bloque es un valor válido antes de hacer la consulta
+            if not id_bloque.isdigit():
+                raise ValueError("El valor de 'id_bloque' no es un número válido.")
 
-    # Pasa las fechas a la plantilla
-    context = {
-        'start_of_week': start_of_week,
-        'end_of_week': end_of_week,
-    }
+            # Obtener el bloque asociado a la reserva
+            bloque_reservado = Bloque.objects.get(id=int(id_bloque))
 
-    return render(request, 'core/horario2.html', context)'''
+            # Resto de tu lógica aquí...
+            
+        except Bloque.DoesNotExist:
+            return JsonResponse({'message': 'El bloque no existe.'}, status=400)
+        except ValueError as ve:
+            return JsonResponse({'message': f'Error: {str(ve)}'}, status=400)
+        except Exception as e:
+            return JsonResponse({'message': f'Error: {str(e)}'}, status=500)
 
+    else:
+        return JsonResponse({'message': 'Método no permitido.'}, status=405)
+"""
+"""test 2
+def datos_reservas(request):
+    if request.method == 'POST':
+        nombre = request.POST.get('nombre')
+        correo = request.POST.get('correo')
+        id_bloque = request.POST.get('id_bloque', '')
 
-# def datos_reservas(request):
-#     if request.method == 'POST':
-#         form = reservaForm(request.POST,request.FILES)
-#         if form.is_valid():
-#             form.save()
-#             messages.succes(request, "Reserva ingresada correctamente")
-#             return('horario2')
-#     else:
-#         form = reservaForm()
-#     return render(request, 'horario2/datos_reservas.html')
+        try:
+            # Obtener el bloque asociado a la reserva
+            bloque = Bloque.objects.get(id=id_bloque)
 
+            # Verificar si el bloque está disponible antes de hacer la reserva
+            if Bloque.estados == 'Disponible':
+                # Actualizar el estado del bloque a "Reservado"
+                Bloque.estados = 'Reservado'
+                Bloque.save()
 
+                # Crear una nueva reserva con el bloque asociado
+                nueva_reserva = Reserva(nomA=nombre, correo=correo, idB=bloque)
+                nueva_reserva.save()
+
+                return JsonResponse({'message': 'Reserva hecha exitosamente.'})
+            else:
+                return JsonResponse({'message': 'El bloque no está disponible para reserva.'}, status=400)
+
+        except Bloque.DoesNotExist:
+            return JsonResponse({'message': 'El bloque no existe.'}, status=400)
+
+    else:
+        return JsonResponse({'message': 'Método no permitido.'}, status=405)"""
 
 
 
@@ -78,44 +103,35 @@ def datos_reservas(request):
 
 
 
+"""def datos_reservas(request):
+    if request.method == 'POST':
+        # Obtener los datos del formulario
+        print(request.body)  # Imprimir el cuerpo de la solicitud para depuración
+        data = json.loads(request.body)
+        nombre = data.get('nombre', '')
+        correo = data.get('correo', '')
+        id_bloque = data.get('id_bloque', '')
+        equipos_seleccionados = data.getlist('equipos_seleccionados', [])
 
+        # Crear una nueva reserva y guárdala en la base de datos
+        nuevo_bloque = Bloque.objects.get(id=id_bloque)
+        nueva_reserva = Reserva(nomA=nombre, correo=correo, idB=nuevo_bloque)
+        nueva_reserva.save()
 
+        # Descontar los equipos seleccionados del stock
+        for id_equipo in equipos_seleccionados:
+            equipo = stock.objects.get(idE=id_equipo)
+            equipo.cantE -= 1
+            equipo.save()
+            # Puedes agregar más lógica aquí según tus necesidades, como verificar si el stock es suficiente, etc.
 
-# def datos_reservas(request):
-#     if request.method == 'POST':
-#         data = json.loads(request.body.decode('utf-8'))
-#         nombre = data.GET.get('nombre', 'Nombre')
-#         correo = data.GET.get('correo', 'correo')
-#         id_bloque = int(data.GET.get('id_bloque', 'idB'))
-#         equipos_seleccionados = data.getlist('equipos_seleccionados', [])
-#         # Crear una nueva reserva y guárdala en la base de datos
-#         nuevo_bloque = bloque.objects.get(id=id_bloque)
-#         nueva_reserva = reserva(nomA=nombre, correo=correo, idB=nuevo_bloque)
-#         nueva_reserva.save()
-#         # Descontar los equipos seleccionados del stock
-#         for id_equipo in equipos_seleccionados:
-#             equipo = stock.objects.get(idE=id_equipo)
-#             equipo.cantE -= 1
-#             equipo.save()
-#             # Puedes agregar más lógica aquí según tus necesidades, como verificar si el stock es suficiente, etc.
-#         return JsonResponse({'mensaje': 'Reserva creada correctamente'})
-#     else:
-#         return JsonResponse({'mensaje': 'Método no permitido'})
-
-# def modal_reservas(request):
-#     if request.method == 'POST':
-#         id_reserva = request.POST.get('idR')
-#         id_producto = request.POST.get('idE')
-#         nombre = request.POST.get('nombre')
-#         correo = request.POST.get('correo')
-#         reserva.objects.creada(nombre=nombre,correo=correo)
-#         return JsonResponse({'message':'Reserva confirmada correctamente'})
-#     else:
-#         return JsonResponse({'message':'Error verifique los datos ingresados.'}, status=405)
+        return JsonResponse({'mensaje': 'Reserva creada correctamente'})
+    else:
+        return JsonResponse({'mensaje': 'Método no permitido'}, status=405)"""
 
 
 
 
-# def vistaH(request):
-#     ins_bloque = bloque.objects.get(id=1)
-#     return render(request, 'horario2.html',{'ins_bloque':ins_bloque})
+
+
+
