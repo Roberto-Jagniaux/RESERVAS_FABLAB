@@ -20,6 +20,9 @@
   <link rel="stylesheet" href="{% static 'css/horario.css' %}" media="screen">
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.js"></script>
   <link id="u-theme-google-font" rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:100,100i,300,300i,400,400i,500,500i,700,700i,900,900i|Open+Sans:300,300i,400,400i,500,500i,600,600i,700,700i,800,800i">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
+
 </head>
 
   <body data-path-to-root="/" data-include-products="false" class="u-body u-overlap u-overlap-contrast u-overlap-transparent u-xl-mode" data-lang="es">
@@ -98,80 +101,62 @@
 
 <!-- Agrega esto al final de tu script en la plantilla HTML -->
 <script>
-$(document).ready(function() {
-  $('#form_reserva').submit(function(event) {
-    event.preventDefault();
-
-    // Obtener el token CSRF
-    var csrftoken = $("[name=csrfmiddlewaretoken]").val();
-
-    // Obtener los datos del formulario serializados
-    var formData = $(this).serialize();
-
-    // Agregar el token CSRF a los datos del formulario
-    formData += '&csrfmiddlewaretoken=' + csrftoken;
-
-    // Obtener el ID del bloque desde el campo oculto en el modal
-    var bloqueID = $('#modal_reservas #bloque_id').val();
-    formData += '&bloque_id=' + bloqueID;
-
-    // Enviar datos al servidor usando AJAX con jQuery
-    $.ajax({
-      type: 'POST',
-      url: '{% url "confirmar_reserva" %}',  // Asegúrate de tener una URL adecuada en tu aplicación Django
-      data: formData,
-      dataType: "json",
-      success: function(data) {
-        alert(data.message);
-        setTimeout(function() {
-          location.reload();
-        }, 1000);
-      },
-      error: function(error) {
-        alert('Hubo un error al procesar la solicitud.');
+  $(document).ready(function() {
+    $('#form_reserva').submit(function(event) {
+      event.preventDefault();
+  
+      // Verificar campos obligatorios
+      var nombre = $('#nombre').val().trim();
+      var correo = $('#correo').val().trim();
+  
+      if (!nombre || !correo) {
+        Swal.fire({
+          icon: 'warning',
+          title: 'Campos obligatorios',
+          text: 'Por favor, complete todos los campos obligatorios.',
+        });
+        return;  // Detener la ejecución si falta algún campo obligatorio
       }
-    });
-  });
-
-  // Agrega un manejador de eventos para mostrar el stock disponible en el modal
-  $('#modal_reservas').on('show.bs.modal', function (event) {
-    var button = $(event.relatedTarget);  // Botón que activó el modal
-    var bloqueID = button.data('event-id');  // ID del bloque asociado al botón
-
-    // Verifica si el ID del bloque es válido
-    if (bloqueID !== undefined) {
-      // Realiza una solicitud AJAX para obtener el stock disponible
+  
+      // Obtener el token CSRF
+      var csrftoken = $("[name=csrfmiddlewaretoken]").val();
+  
+      // Obtener los datos del formulario serializados
+      var formData = $(this).serialize();
+  
+      // Agregar el token CSRF a los datos del formulario
+      formData += '&csrfmiddlewaretoken=' + csrftoken;
+  
+      // Obtener el ID del bloque desde el campo oculto en el modal
+      var bloqueID = $('#modal_reservas #bloque_id').val();
+      formData += '&bloque_id=' + bloqueID;
+  
+      // Enviar datos al servidor usando AJAX con jQuery
       $.ajax({
-        type: 'GET',
-        url: '/obtener_stock_disponible/' + bloqueID + '/',  // Ajusta la URL según tu configuración de URL en Django
-        dataType: 'json',
+        type: 'POST',
+        url: '{% url "confirmar_reserva" %}',  // Asegúrate de tener una URL adecuada en tu aplicación Django
+        data: formData,
+        dataType: "json",
         success: function(data) {
-          // Actualiza el contenido del modal con la información del stock
-          var stockContainer = $('#modal_reservas #stock_disponible');
-          stockContainer.empty();
-
-          if (data.stock_disponible.length > 0) {
-            stockContainer.append('<p>Stock Disponible:</p>');
-            var ul = $('<ul>');
-            data.stock_disponible.forEach(function(stock) {
-              ul.append('<li>' + stock.nombre + '</li>');
-            });
-            stockContainer.append(ul);
-          } else {
-            stockContainer.append('<p>No hay stock disponible.</p>');
-          }
+          Swal.fire({
+            icon: 'success',
+            title: 'Éxito',
+            text: data.message,
+          }).then(function() {
+            location.reload();
+          });
         },
         error: function(error) {
-          console.error('Error al obtener el stock disponible:', error);
+          Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: 'Hubo un error al procesar la solicitud.',
+          });
         }
       });
-    } else {
-      console.error('ID del bloque no definido.');
-    }
+    });
   });
-});
-
-</script>
+  </script>
 
 <!-- ... ajax funcionando(código existente) 
 
