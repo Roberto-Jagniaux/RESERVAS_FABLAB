@@ -24,7 +24,24 @@
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
 
 </head>
+<style>
+  .back-button {
+    position: absolute;
+      top: 10px; /* Distancia desde la parte superior */
+      right: 100px; /* Distancia desde la izquierda */
+      background-color: #f39303; /* Color de fondo */
+      color: white; /* Color del texto */
+      padding: 10px 20px; /* Espaciado interno (arriba/abajo y izquierda/derecha) */
+      font-size: 16px; /* Tamaño de la fuente */
+      border: none; /* Sin borde */
+      border-radius: 5px; /* Bordes redondeados */
+      cursor: pointer; /* Cursor de puntero al pasar sobre el botón */
+  }
 
+  .back-button:hover {
+      background-color: #45a049; /* Cambiar color de fondo al pasar el ratón */
+  }
+</style>
   <body data-path-to-root="/" data-include-products="false" class="u-body u-overlap u-overlap-contrast u-overlap-transparent u-xl-mode" data-lang="es">
     <section class="u-align-center u-clearfix u-palette-5-dark-3 u-section-1" id="carousel_2d24">
       {% if request.user.is_authenticated %} 
@@ -36,6 +53,9 @@
 </a>
 {% else %}
   <a class="nav-link fw-bold py-1 px-0" href="{% url 'login' %}">Ingresar</a>
+{% endif %}
+{% if user.is_staff or user.is_superuser %}
+<button class="back-button" onclick="goBack()">Volver Atrás</button>
 {% endif %}
 
         <div class="u-border-9 u-border-white u-expanded-width u-line u-line-horizontal u-line-1"></div>
@@ -244,4 +264,8 @@ eventClick: function(info) {
     calendar.render();
     calendar.setOption('locale', 'es');
   });
+</script><script>
+  function goBack() {
+      window.history.back();
+  }
 </script>

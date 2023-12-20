@@ -17,8 +17,28 @@
   Cerrar sesión
   <img src="{% static 'img\cerrar-sesion.png' %}" alt="Logout Icon" width="20" height="20">
 </a>
+{% if user.is_staff or user.is_superuser %}
+<button class="back-button" onclick="goBack()">Volver Atrás</button>
+{% endif %}
     <link id="u-theme-google-font" rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:100,100i,300,300i,400,400i,500,500i,700,700i,900,900i|Open+Sans:300,300i,400,400i,500,500i,600,600i,700,700i,800,800i">
 </head>
+<style>
+    .back-button {
+      position: absolute;
+        top: 10px; /* Distancia desde la parte superior */
+        right: 100px; /* Distancia desde la izquierda */
+        background-color: #f39303; /* Color de fondo */
+        color: white; /* Color del texto */
+        padding: 10px 20px; /* Espaciado interno (arriba/abajo y izquierda/derecha) */
+        font-size: 16px; /* Tamaño de la fuente */
+        border: none; /* Sin borde */
+        border-radius: 5px; /* Bordes redondeados */
+        cursor: pointer; /* Cursor de puntero al pasar sobre el botón */
+    }
+  
+    .back-button:hover {
+        background-color: #45a049; /* Cambiar color de fondo al pasar el ratón */
+    }</style>
 <body data-path-to-root="/" data-include-products="false" class="u-body u-overlap u-overlap-contrast u-overlap-transparent u-xl-mode" data-lang="es">
     <section class="u-align-center u-clearfix u-palette-5-dark-3 u-section-1" id="carousel_2d24">
         <div class="u-clearfix u-sheet u-sheet-1">
@@ -30,6 +50,7 @@
                 
                   <div class="u-clearfix u-sheet u-sheet-1">
                       <!-- ... (código anterior) ... -->
+                      <br>
                       <br>
                       <h2>Próximas reservas</h2>
                       <h3>En esta sección puedes visualizar las próximas reservas en base al rango de fechas seleccionado:</h3>
@@ -104,3 +125,8 @@
   }
 </script>
 <!-- ... (resto del código) ... -->
+<script>
+    function goBack() {
+        window.history.back();
+    }
+  </script>

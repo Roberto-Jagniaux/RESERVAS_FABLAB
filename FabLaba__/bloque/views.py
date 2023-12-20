@@ -17,6 +17,7 @@ def bloques(request):
     bloques = Bloque.objects.all()
     today = datetime.now().date()
     elementos_stock = stock.objects.all()
+    user = request.user
 
 
     return render(request, 'core/horario2.html', {'bloques': bloques,'today':today,'elementos_stock':elementos_stock})

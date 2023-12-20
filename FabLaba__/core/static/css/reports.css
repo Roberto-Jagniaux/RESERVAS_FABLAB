@@ -101,5 +101,5 @@ ul li {
     color: #1d1d1d;
     border: 1px solid #ff7300;
     font-weight: bold;
-    float: right; /* Agrega esta línea para posicionar a la derecha */
+    float: left; /* Agrega esta línea para posicionar a la derecha */
 }
