@@ -6,9 +6,10 @@ from django.contrib import admin
 from django import forms
 from django.forms.widgets import DateInput
 from django.db import transaction
+from accounts.models import Project
 
 class stock(models.Model):
-    idE = models.AutoField(primary_key=True)
+    idE = models.AutoField(primary_key=True,verbose_name='ID de Stock')
     nomE = models.CharField(max_length=50)
 
     def __str__(self):
@@ -41,9 +42,11 @@ class Bloque(models.Model):
 
 class reserva(models.Model):
     idR = models.AutoField(primary_key=True)
-    nomA = models.CharField(max_length=25)
+    nomA = models.CharField(max_length=25,verbose_name='Nombre Usuario')
     correo = models.CharField(max_length=50)
-    idB = models.ForeignKey(Bloque, null=True, on_delete=models.CASCADE)
+    idB = models.ForeignKey(Bloque, null=True, on_delete=models.CASCADE,verbose_name='ID de Bloque')
+    proyecto_usuario = models.ForeignKey(Project, on_delete=models.SET_NULL, null=True, blank=True, verbose_name='Proyecto del Usuario')
+
 
     def save(self, *args, **kwargs):
         # Verificar si ya tiene un idR asignado
@@ -93,10 +96,10 @@ class BloqueAdmin(admin.ModelAdmin):
     list_display = ('id', 'estados', 'hora_inicio', 'hora_fin', 'fecha')
 
     def save_model(self, request, obj, form, change):
-        copiar_bloque = form.cleaned_data.get('Copiar_bloque')
-        otra_fecha_1 = form.cleaned_data.get('Nueva_fecha')
-        otra_fecha_2 = form.cleaned_data.get('Nueva_fecha')
-        otra_fecha_3 = form.cleaned_data.get('Nueva_fecha')
+        copiar_bloque = form.cleaned_data.get('copiar_bloque')  # Corregido aquí
+        otra_fecha_1 = form.cleaned_data.get('otra_fecha_1')  # Corregido aquí
+        otra_fecha_2 = form.cleaned_data.get('otra_fecha_2')  # Corregido aquí
+        otra_fecha_3 = form.cleaned_data.get('otra_fecha_3')  # Corregido aquí
 
         if copiar_bloque:
             # Procesa las fechas copiadas

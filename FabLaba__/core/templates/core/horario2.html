@@ -157,52 +157,6 @@
     });
   });
   </script>
-
-<!-- ... ajax funcionando(código existente) 
-
-
-
-
-<script>
-$(document).ready(function() {
-    $('#form_reserva').submit(function(event) {
-        event.preventDefault();
-
-        // Obtener el token CSRF
-        var csrftoken = $("[name=csrfmiddlewaretoken]").val();
-
-        // Obtener los datos del formulario serializados
-        var formData = $(this).serialize();
-
-        // Agregar el token CSRF a los datos del formulario
-        formData += '&csrfmiddlewaretoken=' + csrftoken;
-
-        // Obtener el ID del bloque desde el campo oculto en el modal
-        var bloqueID = $('#modal_reservas #bloque_id').val();
-        formData += '&bloque_id=' + bloqueID;
-
-        // Enviar datos al servidor usando AJAX con jQuery
-        $.ajax({
-            type: 'POST',
-            url: '{% url "confirmar_reserva" %}',  // Asegúrate de tener una URL adecuada en tu aplicación Django
-            data: formData,
-            dataType: "json",
-            success: function(data) {
-                alert(data.message);
-                setTimeout(function() {
-                    location.reload();
-                }, 1000);
-            },
-            error: function(error) {
-                alert('Hubo un error al procesar la solicitud.');
-            }
-        });
-    });
-});
-
-
-</script>... -->
-
 <script>
   document.addEventListener('DOMContentLoaded', function() {
     var eventosDisponibles = document.querySelectorAll('.disponible-event');

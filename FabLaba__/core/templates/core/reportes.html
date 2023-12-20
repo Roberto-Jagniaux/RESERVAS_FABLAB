@@ -8,22 +8,15 @@
     <meta charset="utf-8">
     <meta name="keywords" content="">
     <meta name="description" content="">
-    <title>Report</title>
-    <link rel="stylesheet" href="//capp.nicepage.com/215c7b1811a45d638df3c102c8e210051fbda783/nicepage.css" media="screen">
-    <link rel="stylesheet" href="{% static 'css/bloque2.css' %}" media="screen">
-    <link rel="stylesheet" href="{% static 'css/bloque1.css' %}" media="screen">
-    <link rel="stylesheet" href="{% static 'css/reportess.css' %}" media="screen">
-    <style>
-        button {
-          padding: 0;
-          margin: 0;
-        }
+    <title>Reportes</title>
 
-    </style>
-
-    <script class="u-script" type="text/javascript" src="//capp.nicepage.com/assets/jquery-3.5.1.min.js" defer=""></script>
-    <script class="u-script" type="text/javascript" src="//capp.nicepage.com/215c7b1811a45d638df3c102c8e210051fbda783/nicepage.js" defer=""></script>
-    <meta name="generator" content="Nicepage 5.21.10, nicepage.com">
+    <link rel="stylesheet" href="{% static 'css/reports.css' %}" media="screen">
+    
+<a href="{% url 'exit' %}" class="boton_logout">
+          
+  Cerrar sesión
+  <img src="{% static 'img\cerrar-sesion.png' %}" alt="Logout Icon" width="20" height="20">
+</a>
     <link id="u-theme-google-font" rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:100,100i,300,300i,400,400i,500,500i,700,700i,900,900i|Open+Sans:300,300i,400,400i,500,500i,600,600i,700,700i,800,800i">
 </head>
 <body data-path-to-root="/" data-include-products="false" class="u-body u-overlap u-overlap-contrast u-overlap-transparent u-xl-mode" data-lang="es">
@@ -31,37 +24,83 @@
         <div class="u-clearfix u-sheet u-sheet-1">
             <div class="u-border-9 u-border-white u-expanded-width u-line u-line-horizontal u-line-1"></div>
             <div class="u-container-style u-group u-palette-2-base u-radius-10 u-shape-round u-group-1">
-                <div class="u-container-layout u-container-layout-1">
-                    <h4 class="u-text-1fablab">Reportes FabLab</h4>
-                </div>
             </div>
-            <table class= "styled-table">
+            <body data-path-to-root="/" data-include-products="false" class="u-body u-overlap u-overlap-contrast u-overlap-transparent u-xl-mode" data-lang="es">
+              <section class="u-align-center u-clearfix u-palette-5-dark-3 u-section-1" id="carousel_2d24">
+                
+                  <div class="u-clearfix u-sheet u-sheet-1">
+                      <!-- ... (código anterior) ... -->
+                      <br>
+                      <h2>Próximas reservas</h2>
+                      <h3>En esta sección puedes visualizar las próximas reservas en base al rango de fechas seleccionado:</h3>
+                      <form id="filtroFechasForm">
+                  <label for="fechaDesde">Desde:</label>
+                  <input type="date" id="fechaDesde" name="fechaDesde">
+              
+                  <label for="fechaHasta">Hasta:</label>
+                  <input type="date" id="fechaHasta" name="fechaHasta">
+              
+                  <button type="button" onclick="filtrarReservas()">Filtrar</button>
+                  
+              </form>
+                      <table class="styled-table">
+                        <thead>
+                            <tr>
+                                <th>Nombre usuario</th>
+                                <th>Correo</th>
+                                <th>Proyecto</th>
+                                <th>ID de Bloque</th>
+                                <th>Hora de Inicio</th>
+                                <th>Hora de Fin</th>
+                                <th>Fecha</th>
+                                <th>Equipos reservados</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for reserva in reservas %}
+                                <tr>
+                                    <td>{{ reserva.nomA }}</td>
+                                    <td>{{ reserva.correo }}</td>
+                                    <td>{{ reserva.proyecto_usuario }}</td>
+                                    <td>{{ reserva.idB.id }}</td>
+                                    <td>{{ reserva.idB.hora_inicio }}</td>
+                                    <td>{{ reserva.idB.hora_fin }}</td>
+                                    <td>{{ reserva.idB.fecha }}</td>
 
-              <thead>
-                <tr>
-                  <th>Reservas Confirmadas</th>
-                  <th>descargar pdf</th>
-                </tr>
-              </thead>
-              <tbody>
-                  <tr>
-                    <td>1</td>
-                    <td><a href="/ruta/al/archivo/a/descargar.pdf" download="nombre-del-archivo.pdf">
-                          <button>
-                              <img 
-                              src="https://previews.123rf.com/images/arcady31/arcady311209/arcady31120900065/15399621-archivo-pdf-descargar-icono-ilustraci%C3%B3n-vectorial.jpg" 
-                              width="30px"
-                              height="30px"
+                                    {% if reserva.idB.idE.all %}
+                                        <td>
+                                            {% for stock_item in reserva.idB.idE.all %}
+                                                {{ stock_item.nomE }}
+                                                {% if not forloop.last %}, {% endif %}
+                                            {% endfor %}
+                                        </td>
+                                    {% else %}
+                                        <td>Sin equipos reservados</td>
+                                    {% endif %}
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
 
-                              alt="">
+                    
+                  </div>
+              </section>
+          </body>
 
-                          </button>
-                        </a>
-                    </td>
-                  </tr>
-              </tbody>
-            </table>
         </div>
     </section>
+    <img class="u-image-1" src="{% static 'img\Calada.png' %}" alt="">
 </body>
 </html> 
+
+<script>
+  function filtrarReservas() {
+      // Obtener los valores de las fechas desde y hasta
+      var fechaDesde = document.getElementById("fechaDesde").value;
+      var fechaHasta = document.getElementById("fechaHasta").value;
+
+      // Redirigir a la página de reportes con los parámetros de fecha
+      window.location.href = "/reportes/?fecha_desde=" + fechaDesde + "&fecha_hasta=" + fechaHasta;
+  }
+</script>
+<!-- ... (resto del código) ... -->
